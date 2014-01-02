@@ -1,0 +1,923 @@
+unit Main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, Menus, XPMan, StdCtrls, jpeg, Math;
+
+type
+  TForm1 = class(TForm)
+    XPManifest1: TXPManifest;
+    Timer1: TTimer;
+    MainMenu1: TMainMenu;
+    pad: TShape;
+    ball: TShape;
+    Pliki1: TMenuItem;
+    Gra1: TMenuItem;
+    Pomoc1: TMenuItem;
+    Wyniki1: TMenuItem;
+    N1: TMenuItem;
+    Zakocz1: TMenuItem;
+    NowaGra1: TMenuItem;
+    Pauza1: TMenuItem;
+    Restart1: TMenuItem;
+    Instrukcja1: TMenuItem;
+    N2: TMenuItem;
+    OAutorze1: TMenuItem;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Resume1: TMenuItem;
+    N3: TMenuItem;
+    Shape1: TShape;
+    Shape2: TShape;
+    Shape3: TShape;
+    Shape4: TShape;
+    Shape5: TShape;
+    Shape6: TShape;
+    Shape7: TShape;
+    Shape8: TShape;
+    Shape9: TShape;
+    Shape10: TShape;
+    Shape11: TShape;
+    Shape12: TShape;
+    Shape13: TShape;
+    Shape14: TShape;
+    Shape15: TShape;
+    Shape16: TShape;
+    Shape17: TShape;
+    Shape18: TShape;
+    Shape19: TShape;
+    Shape20: TShape;
+    Shape21: TShape;
+    Shape22: TShape;
+    Shape23: TShape;
+    Shape24: TShape;
+    procedure Zakocz1Click(Sender: TObject);
+    procedure Restart1Click(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Pauza1Click(Sender: TObject);
+    procedure NowaGra1Click(Sender: TObject);
+    procedure Resume1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Instrukcja1Click(Sender: TObject);
+    procedure OAutorze1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    Hori : integer;
+    Vert : integer;
+    Score: integer;
+    Balls: integer;
+    Status: string;
+    i,k,j: integer;
+  end;
+
+var
+  Form1: TForm1;
+procedure Restart;
+
+implementation
+
+{$R *.dfm}
+
+Procedure Restart;
+begin
+  with Form1 do
+    begin
+      Hori := 5; // Left
+      Vert := -5; // Up
+      Score := 0000;
+      Balls := 3;
+      Status := '-> Play <-';
+      i := 0;
+      j := 0;
+      k := 0;
+
+  with pad do
+    begin
+      left    := 184;
+      top     := 424;
+      height  := 9;
+      width   := 81;
+    end;
+  with ball do
+    begin
+      left    := 216;
+      top     := 400;
+      height  := 17;
+      width   := 17;
+    end;
+  with Shape1 do
+    begin
+      left    := 0;
+      top     := 0;
+      height  := 25;
+      width   := 57;
+    end;
+  end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  timer1.Enabled := false;
+  Form1.Show;
+  ShowMessage('Gotowy do gry ?');
+  sleep(1000);
+  Form1.Label5.Caption := '->   3  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   2  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   1  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '-> Play <-';
+  Form1.Label5.Update;
+  Restart;
+  timer1.Enabled := true;
+end;
+
+procedure TForm1.Zakocz1Click(Sender: TObject);
+begin
+  Form1.Close;
+end;
+
+procedure TForm1.Restart1Click(Sender: TObject);
+begin
+  sleep(1000);
+  Form1.Label5.Caption := '->   3  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   2  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   1  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '-> Play <-';
+  Form1.Label5.Update;
+  Restart;
+  timer1.Enabled := true;
+end;
+
+procedure TForm1.Pauza1Click(Sender: TObject);
+var
+  I :Integer;
+begin
+  timer1.enabled := false;
+  Form1.Label5.Caption := '-> Pause <-';
+
+    I := 0;
+
+  Repeat
+    sleep(600);
+    Form1.Label5.Caption := '->       <-';
+    Form1.Label5.Update;
+    sleep(600);
+    Form1.Label5.Caption := '-> Pause <-';
+    Form1.Label5.Update;
+    I:=I+1;
+  until I = 3;
+
+end;
+
+procedure TForm1.Resume1Click(Sender: TObject);
+begin
+  sleep(1000);
+  Form1.Label5.Caption := '->   3  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   2  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  Form1.Label5.Caption := '->   1  <-';
+  Form1.Label5.Update;
+  sleep(1000);
+  timer1.enabled := true;
+  Form1.Label5.Caption := '-> Play <-';
+  Form1.Label5.Update;
+end;
+
+procedure TForm1.NowaGra1Click(Sender: TObject);
+var
+  NewGame: integer;
+begin
+  timer1.enabled := false;
+  NewGame := MessageDlg('Czy chcesz zacz¹æ jeszcze raz ?', MTINformation, [mbYes,mbNo], 0);
+
+  if NewGame = mrYes
+    then
+      sleep(1000);
+      Form1.Label5.Caption := '->   3  <-';
+      Form1.Label5.Update;
+      sleep(1000);
+      Form1.Label5.Caption := '->   2  <-';
+      Form1.Label5.Update;
+      sleep(1000);
+      Form1.Label5.Caption := '->   1  <-';
+      Form1.Label5.Update;
+      sleep(1000);
+      Form1.Label5.Caption := '-> Play <-';
+      Form1.Label5.Update;
+      Restart;
+      timer1.Enabled := true;
+      
+  if NewGame = mrNo
+    then
+      timer1.Enabled := true;
+end;
+
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  // Wykrywanie klawiatury
+
+if timer1.enabled = true then
+
+  if Key = vk_Left
+    then
+      if pad.Left < 0
+        then
+          pad.Left := pad.Left - 0
+        else
+          pad.Left := pad.Left - 15
+    else
+  if Key = vk_Right
+    then
+      if pad.Left > 368
+        then
+          pad.Left := pad.Left + 0
+        else
+          pad.Left := pad.Left + 15
+else
+  if timer1.enabled = false then
+    if Key = (vk_Left) or (vk_Right)
+     then
+      pad.Left := pad.Left - 0
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  BL,BT,BW,BH: Integer;
+  PL,PT,PW,PH: Integer;
+  SL,ST,SW,SH: Integer;
+
+  SL2,ST2,SW2,SH2: Integer;
+  SL3,ST3,SW3,SH3: Integer;
+  SL4,ST4,SW4,SH4: Integer;
+  SL5,ST5,SW5,SH5: Integer;
+  SL6,ST6,SW6,SH6: Integer;
+  SL7,ST7,SW7,SH7: Integer;
+  SL8,ST8,SW8,SH8: Integer;
+  SL9,ST9,SW9,SH9: Integer;
+  SL10,ST10,SW10,SH10: Integer;
+
+  SL11,ST11,SW11,SH11: Integer;
+  SL12,ST12,SW12,SH12: Integer;
+  SL13,ST13,SW13,SH13: Integer;
+  SL14,ST14,SW14,SH14: Integer;
+  SL15,ST15,SW15,SH15: Integer;
+  SL16,ST16,SW16,SH16: Integer;
+  SL17,ST17,SW17,SH17: Integer;
+  SL18,ST18,SW18,SH18: Integer;
+  SL19,ST19,SW19,SH19: Integer;
+  SL20,ST20,SW20,SH20: Integer;
+
+  SL21,ST21,SW21,SH21: Integer;
+  SL22,ST22,SW22,SH22: Integer;
+  SL23,ST23,SW23,SH23: Integer;
+  SL24,ST24,SW24,SH24: Integer;
+
+
+begin
+    // Uproszczone nazwy
+    BL := ball.Left;
+    BT := ball.Top;
+    BW := ball.Width;
+    BH := ball.Height;
+
+    PL := pad.Left;
+    PT := pad.Top;
+    PW := pad.Width;
+    PH := pad.Height;
+
+    SL := Shape1.Left;
+    ST := Shape1.Top;
+    SW := Shape1.Width;
+    SH := Shape1.Height;
+
+    // Nie mo¿na deklarowac !!!
+
+    ball.Left := ball.left + Hori;
+    ball.top := ball.top + Vert;
+
+    Form1.Caption := 'Break Wall | Thomas Martin | Score: ' + IntToStr(Score) + ' Balls: ' + IntToStr(Balls);
+    Form1.Update;
+    Form1.Label2.Caption := IntToStr(Score);
+    Form1.Label3.Caption := IntToStr(Balls);
+
+    // Kolizja o sciany
+
+    if ball.Left <= 1
+      then
+        //Hori := 5;
+        Hori := RandomRange(6,3);
+
+    if ball.Left >= 430
+      then
+        //Hori := -5;
+        Hori := RandomRange(-6,-3);
+
+    if ball.Top <= 0 //0
+        then
+          Vert := +5;
+
+    //if ball.Top >= 440 // 432
+        //then
+         //Vert := - 5;
+
+    if ball.Top > 440 then
+      begin
+        timer1.Enabled := false;
+        inc(Balls, -1);
+          if Balls <= 0 then
+              begin
+                timer1.Enabled := false;
+                ShowMessage('Ojoj przegra³eœ :(' + #13#10  + 'Spróbuj jeszcze raz :)' + #13#10 + 'Twój wynik to: ' + IntToStr(Score));
+                timer1.Enabled := false;
+              end else
+            begin
+        Form1.Label3.Caption := IntToStr(Balls);
+        Form1.Label3.Update;
+        ball.left  := 216;
+        ball.top := 400;
+        pad.Left := 184;
+
+        sleep(1000);
+        Form1.Label5.Caption := '->   3  <-';
+        Form1.Label5.Update;
+        sleep(1000);
+        Form1.Label5.Caption := '->   2  <-';
+        Form1.Label5.Update;
+        sleep(1000);
+        Form1.Label5.Caption := '->   1  <-';
+        Form1.Label5.Update;
+        sleep(1000);
+        timer1.enabled := true;
+        Form1.Label5.Caption := '-> Play <-';
+        Form1.Label5.Update;
+        timer1.Enabled := true;
+      end;
+    end;
+
+  // Kolizja o pad
+
+  if ((BT + BH) >= (PT)) and ((BL + BW) <= (PL + PW)) and ((BL + BW) >= (PL))
+    then
+      Vert := - 5;
+
+  // Kolizja o shape
+
+  if ((BT + BW) <= (ST + SH + 20)) and ((BT + BH) >= (ST)) and ((BL + BW) >= (SL)) and ((BL + BW) <= (SL + SW))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape1.Brush.Color := clRed;
+        Form1.Shape1.Update;
+        sleep(100);
+        Form1.Shape1.Visible := false;
+        Form1.Shape1.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape1.Brush.Color := clWhite;
+      end;
+
+      //------------------------ Bajzel na kulkach jak sie nie umie array to cierp :( --------------------
+
+    SL2 := Shape2.Left;
+    ST2 := Shape2.Top;
+    SW2 := Shape2.Width;
+    SH2 := Shape2.Height;
+
+    SL3 := Shape3.Left;
+    ST3 := Shape3.Top;
+    SW3 := Shape3.Width;
+    SH3 := Shape3.Height;
+
+    SL4 := Shape4.Left;
+    ST4 := Shape4.Top;
+    SW4 := Shape4.Width;
+    SH4 := Shape4.Height;
+
+    SL5 := Shape5.Left;
+    ST5 := Shape5.Top;
+    SW5 := Shape5.Width;
+    SH5 := Shape5.Height;
+
+    SL6 := Shape6.Left;
+    ST6 := Shape6.Top;
+    SW6 := Shape6.Width;
+    SH6 := Shape6.Height;
+
+    SL7 := Shape7.Left;
+    ST7 := Shape7.Top;
+    SW7 := Shape7.Width;
+    SH7 := Shape7.Height;
+
+    SL8 := Shape8.Left;
+    ST8 := Shape8.Top;
+    SW8 := Shape8.Width;
+    SH8 := Shape8.Height;
+
+    SL9 := Shape9.Left;
+    ST9 := Shape9.Top;
+    SW9 := Shape9.Width;
+    SH9 := Shape9.Height;
+
+    SL10 := Shape10.Left;
+    ST10 := Shape10.Top;
+    SW10 := Shape10.Width;
+    SH10 := Shape10.Height;
+
+    SL11 := Shape11.Left;
+    ST11 := Shape11.Top;
+    SW11 := Shape11.Width;
+    SH11 := Shape11.Height;
+
+    SL12 := Shape12.Left;
+    ST12 := Shape12.Top;
+    SW12 := Shape12.Width;
+    SH12 := Shape12.Height;
+
+    SL13 := Shape13.Left;
+    ST13 := Shape13.Top;
+    SW13 := Shape13.Width;
+    SH13 := Shape13.Height;
+
+    SL14 := Shape14.Left;
+    ST14 := Shape14.Top;
+    SW14 := Shape14.Width;
+    SH14 := Shape14.Height;
+
+    SL15 := Shape15.Left;
+    ST15 := Shape15.Top;
+    SW15 := Shape15.Width;
+    SH15 := Shape15.Height;
+
+    SL16 := Shape16.Left;
+    ST16 := Shape16.Top;
+    SW16 := Shape16.Width;
+    SH16 := Shape16.Height;
+
+    SL17 := Shape17.Left;
+    ST17 := Shape17.Top;
+    SW17 := Shape17.Width;
+    SH17 := Shape17.Height;
+
+    SL18 := Shape18.Left;
+    ST18 := Shape18.Top;
+    SW18 := Shape18.Width;
+    SH18 := Shape18.Height;
+
+    SL19 := Shape19.Left;
+    ST19 := Shape19.Top;
+    SW19 := Shape19.Width;
+    SH19 := Shape19.Height;
+
+    SL20 := Shape20.Left;
+    ST20 := Shape20.Top;
+    SW20 := Shape20.Width;
+    SH20 := Shape20.Height;
+
+    SL21 := Shape21.Left;
+    ST21 := Shape21.Top;
+    SW21 := Shape21.Width;
+    SH21 := Shape21.Height;
+
+    SL22 := Shape22.Left;
+    ST22 := Shape22.Top;
+    SW22 := Shape22.Width;
+    SH22 := Shape22.Height;
+
+    SL23 := Shape23.Left;
+    ST23 := Shape23.Top;
+    SW23 := Shape23.Width;
+    SH23 := Shape23.Height;
+
+    SL24 := Shape24.Left;
+    ST24 := Shape24.Top;
+    SW24 := Shape24.Width;
+    SH24 := Shape24.Height;
+
+    //============ Ufff ===================
+
+    if ((BT + BW) <= (ST2 + SH2 + 20)) and ((BT + BH) >= (ST2)) and ((BL + BW) >= (SL2)) and ((BL + BW) <= (SL2 + SW2))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape2.Brush.Color := clRed;
+        Form1.Shape2.Update;
+        sleep(100);
+        Form1.Shape2.Visible := false;
+        Form1.Shape2.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape2.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST3 + SH3 + 20)) and ((BT + BH) >= (ST3)) and ((BL + BW) >= (SL3)) and ((BL + BW) <= (SL3 + SW3))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape3.Brush.Color := clRed;
+        Form1.Shape3.Update;
+        sleep(100);
+        Form1.Shape3.Visible := false;
+        Form1.Shape3.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape3.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST4 + SH4 + 20)) and ((BT + BH) >= (ST4)) and ((BL + BW) >= (SL4)) and ((BL + BW) <= (SL4 + SW4))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape4.Brush.Color := clRed;
+        Form1.Shape4.Update;
+        sleep(100);
+        Form1.Shape4.Visible := false;
+        Form1.Shape4.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape4.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST5 + SH5 + 20)) and ((BT + BH) >= (ST5)) and ((BL + BW) >= (SL5)) and ((BL + BW) <= (SL5 + SW5))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape5.Brush.Color := clRed;
+        Form1.Shape5.Update;
+        sleep(100);
+        Form1.Shape5.Visible := false;
+        Form1.Shape5.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape5.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST6 + SH6 + 20)) and ((BT + BH) >= (ST6)) and ((BL + BW) >= (SL6)) and ((BL + BW) <= (SL6 + SW6))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape6.Brush.Color := clRed;
+        Form1.Shape6.Update;
+        sleep(100);
+        Form1.Shape6.Visible := false;
+        Form1.Shape6.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape6.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST7 + SH7 + 20)) and ((BT + BH) >= (ST7)) and ((BL + BW) >= (SL7)) and ((BL + BW) <= (SL7 + SW7))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape7.Brush.Color := clRed;
+        Form1.Shape7.Update;
+        sleep(100);
+        Form1.Shape7.Visible := false;
+        Form1.Shape7.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape7.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST8 + SH8 + 20)) and ((BT + BH) >= (ST8)) and ((BL + BW) >= (SL8)) and ((BL + BW) <= (SL8 + SW8))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape8.Brush.Color := clRed;
+        Form1.Shape8.Update;
+        sleep(100);
+        Form1.Shape8.Visible := false;
+        Form1.Shape8.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape8.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST9 + SH9 + 20)) and ((BT + BH) >= (ST9)) and ((BL + BW) >= (SL9)) and ((BL + BW) <= (SL9 + SW9))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape9.Brush.Color := clRed;
+        Form1.Shape9.Update;
+        sleep(100);
+        Form1.Shape9.Visible := false;
+        Form1.Shape9.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape9.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST10 + SH10 + 20)) and ((BT + BH) >= (ST10)) and ((BL + BW) >= (SL10)) and ((BL + BW) <= (SL10 + SW10))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape10.Brush.Color := clRed;
+        Form1.Shape10.Update;
+        sleep(100);
+        Form1.Shape10.Visible := false;
+        Form1.Shape10.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape10.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST11 + SH11 + 20)) and ((BT + BH) >= (ST11)) and ((BL + BW) >= (SL11)) and ((BL + BW) <= (SL11 + SW11))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape11.Brush.Color := clRed;
+        Form1.Shape11.Update;
+        sleep(100);
+        Form1.Shape11.Visible := false;
+        Form1.Shape11.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape11.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST12 + SH12 + 20)) and ((BT + BH) >= (ST12)) and ((BL + BW) >= (SL12)) and ((BL + BW) <= (SL12 + SW12))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape12.Brush.Color := clRed;
+        Form1.Shape12.Update;
+        sleep(100);
+        Form1.Shape12.Visible := false;
+        Form1.Shape12.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape12.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST13 + SH13 + 20)) and ((BT + BH) >= (ST13)) and ((BL + BW) >= (SL13)) and ((BL + BW) <= (SL13 + SW13))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape13.Brush.Color := clRed;
+        Form1.Shape13.Update;
+        sleep(100);
+        Form1.Shape13.Visible := false;
+        Form1.Shape13.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape13.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST14 + SH14 + 20)) and ((BT + BH) >= (ST14)) and ((BL + BW) >= (SL14)) and ((BL + BW) <= (SL14 + SW14))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape14.Brush.Color := clRed;
+        Form1.Shape14.Update;
+        sleep(100);
+        Form1.Shape14.Visible := false;
+        Form1.Shape14.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape14.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST15 + SH15 + 20)) and ((BT + BH) >= (ST15)) and ((BL + BW) >= (SL15)) and ((BL + BW) <= (SL15 + SW15))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape15.Brush.Color := clRed;
+        Form1.Shape15.Update;
+        sleep(100);
+        Form1.Shape15.Visible := false;
+        Form1.Shape15.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape15.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST16 + SH16 + 20)) and ((BT + BH) >= (ST16)) and ((BL + BW) >= (SL16)) and ((BL + BW) <= (SL16 + SW16))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape16.Brush.Color := clRed;
+        Form1.Shape16.Update;
+        sleep(100);
+        Form1.Shape16.Visible := false;
+        Form1.Shape16.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape16.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST17 + SH17 + 20)) and ((BT + BH) >= (ST17)) and ((BL + BW) >= (SL17)) and ((BL + BW) <= (SL17 + SW17))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape17.Brush.Color := clRed;
+        Form1.Shape17.Update;
+        sleep(100);
+        Form1.Shape17.Visible := false;
+        Form1.Shape17.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape17.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST18 + SH18 + 20)) and ((BT + BH) >= (ST18)) and ((BL + BW) >= (SL18)) and ((BL + BW) <= (SL18 + SW18))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape18.Brush.Color := clRed;
+        Form1.Shape18.Update;
+        sleep(100);
+        Form1.Shape18.Visible := false;
+        Form1.Shape18.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape18.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST19 + SH19 + 20)) and ((BT + BH) >= (ST19)) and ((BL + BW) >= (SL19)) and ((BL + BW) <= (SL19 + SW19))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape19.Brush.Color := clRed;
+        Form1.Shape19.Update;
+        sleep(100);
+        Form1.Shape19.Visible := false;
+        Form1.Shape19.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape19.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST20 + SH20 + 20)) and ((BT + BH) >= (ST20)) and ((BL + BW) >= (SL20)) and ((BL + BW) <= (SL20 + SW20))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape20.Brush.Color := clRed;
+        Form1.Shape20.Update;
+        sleep(100);
+        Form1.Shape20.Visible := false;
+        Form1.Shape20.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape20.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST21 + SH21 + 20)) and ((BT + BH) >= (ST21)) and ((BL + BW) >= (SL21)) and ((BL + BW) <= (SL21 + SW21))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape21.Brush.Color := clRed;
+        Form1.Shape21.Update;
+        sleep(100);
+        Form1.Shape21.Visible := false;
+        Form1.Shape21.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape21.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST22 + SH22 + 20)) and ((BT + BH) >= (ST22)) and ((BL + BW) >= (SL22)) and ((BL + BW) <= (SL22 + SW22))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape22.Brush.Color := clRed;
+        Form1.Shape22.Update;
+        sleep(100);
+        Form1.Shape22.Visible := false;
+        Form1.Shape22.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape22.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST23 + SH23 + 20)) and ((BT + BH) >= (ST23)) and ((BL + BW) >= (SL23)) and ((BL + BW) <= (SL23 + SW23))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape23.Brush.Color := clRed;
+        Form1.Shape23.Update;
+        sleep(100);
+        Form1.Shape23.Visible := false;
+        Form1.Shape23.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape23.Brush.Color := clWhite;
+      end;
+
+      if ((BT + BW) <= (ST24 + SH24 + 20)) and ((BT + BH) >= (ST24)) and ((BL + BW) >= (SL24)) and ((BL + BW) <= (SL24 + SW24))
+    then
+      begin
+        Vert := 5;
+        Form1.Shape24.Brush.Color := clRed;
+        Form1.Shape24.Update;
+        sleep(100);
+        Form1.Shape24.Visible := false;
+        Form1.Shape24.Left := 1000;
+        inc(Score, 1);
+      end
+    else
+      begin
+        Form1.Shape24.Brush.Color := clWhite;
+      end;
+
+      if  (Shape1.Visible = false) and (Shape2.Visible = false) and (Shape3.Visible = false) and
+          (Shape4.Visible = false) and (Shape5.Visible = false) and (Shape6.Visible = false) and
+          (Shape7.Visible = false) and (Shape8.Visible = false) and (Shape9.Visible = false) and
+          (Shape10.Visible = false) and (Shape11.Visible = false) and (Shape12.Visible = false) and
+          (Shape13.Visible = false) and (Shape14.Visible = false) and (Shape15.Visible = false) and
+          (Shape16.Visible = false) and (Shape17.Visible = false) and (Shape18.Visible = false) and
+          (Shape19.Visible = false) and (Shape20.Visible = false) and (Shape21.Visible = false) and
+          (Shape22.Visible = false) and (Shape23.Visible = false) and (Shape24.Visible = false)
+            then
+              begin
+                timer1.Enabled := false;
+                ShowMessage('Wygra³eœ :)' + #13#10  + 'Mo¿e jeszcze raz ? :)' + #13#10 + 'Twój wynik to: ' + IntToStr(Score));
+              end
+            else
+              begin
+                  timer1.Enabled := true;
+              end;
+
+end;
+
+
+procedure TForm1.Instrukcja1Click(Sender: TObject);
+begin
+  ShowMessage('Nie ma :P');
+end;
+
+procedure TForm1.OAutorze1Click(Sender: TObject);
+begin
+  ShowMessage('Program stworzy³: Thomas Martin | mechatronik32@gmail.com | 24.10.13 | v.1 ');
+end;
+
+end.

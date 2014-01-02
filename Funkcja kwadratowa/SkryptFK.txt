@@ -1,0 +1,394 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Spin, XPMan, Menus, ExtCtrls, Math, Printers;
+
+type
+  TForm1 = class(TForm)
+    Bevel1: TBevel;
+    MainMenu1: TMainMenu;
+    Pliki1: TMenuItem;
+    Pomoc1: TMenuItem;
+    Zapiszplik1: TMenuItem;
+    N1: TMenuItem;
+    Zakocz1: TMenuItem;
+    Instrukcja1: TMenuItem;
+    N2: TMenuItem;
+    Oprogramie1: TMenuItem;
+    Drukuj1: TMenuItem;
+    XPManifest1: TXPManifest;
+    Label1: TLabel;
+    SpinEdit1: TSpinEdit;
+    Label2: TLabel;
+    SpinEdit2: TSpinEdit;
+    Label3: TLabel;
+    SpinEdit3: TSpinEdit;
+    Label4: TLabel;
+    Bevel2: TBevel;
+    Button1: TButton;
+    Button2: TButton;
+    Bevel3: TBevel;
+    Bevel5: TBevel;
+    Wynik: TMemo;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
+    PrintDialog1: TPrintDialog;
+    Label5: TLabel;
+    Label6: TLabel;
+    Button3: TButton;
+    Panel1: TPanel;
+    Apalne: TPanel;
+    procedure Zakocz1Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Oprogramie1Click(Sender: TObject);
+    procedure Zapiszplik1Click(Sender: TObject);
+    procedure Drukuj1Click(Sender: TObject);
+    procedure Instrukcja1Click(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+
+
+  private
+    { Private declarations }
+  public
+    MyFile : TextFile;
+    MyText : String;
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+uses Unit2, Unit3;
+
+{$R *.dfm}
+
+procedure TForm1.Zakocz1Click(Sender: TObject);
+begin
+     Form1.Close;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  a, b, c : real;
+  delta, x, x1, x2 : real;
+  p, q : real;
+  
+begin
+  a := SpinEdit1.Value;
+  b := SpinEdit2.Value;
+  c := SpinEdit3.Value;
+
+  if (a=6) and (b=6) and (c=6) then
+      begin
+        ShowMessage(' AVE Satan ! :)');
+      end;
+
+  if a = 0 then
+      begin
+        ShowMessage('To nie jest funkcja kwadratowa !');
+      end
+    else
+      begin
+        delta := (b * b) - (4 * a * c);
+          if delta < 0 then
+            begin
+                ShowMessage('Delta jest mniejsza od zera. Brak miejsc zerowych.');
+            end;
+
+
+        x :=    (-b)/(2*a);
+        x1 :=   ((-b) + sqrt(delta)) / (2 * a);
+        x2 :=   ((-b) - sqrt(delta)) / (2 * a);
+        p :=    (-b) /(2*a);
+        q :=    (-delta) / (4*a);
+
+  Wynik.Lines.Clear;
+    if (b<0) and (c<0) then
+      begin
+       Wynik.Lines.Add('Funkcja:  y= '+FloatToStr(a)+'x^2 + ('+FloatToStr(b)+')x + ('+FloatToStr(c)+')')
+      end else
+    if (b<0) and (c>0) then
+      begin
+        Wynik.Lines.Add('Funkcja:  y= '+FloatToStr(a)+'x^2 + ('+FloatToStr(b)+')x +'+FloatToStr(c))
+      end else
+    if (b>0) and (c<0) then
+      begin
+        Wynik.Lines.Add('Funkcja:  y= '+FloatToStr(a)+'x^2 + '+FloatToStr(b)+'x + ('+FloatToStr(c)+')')
+      end else
+    begin
+        Wynik.Lines.Add('Funkcja:  y= '+FloatToStr(a)+'x^2 + '+FloatToStr(b)+'x + '+FloatToStr(c))
+    end;
+    { Koniec czesci dodawana nawiasow }
+
+    Wynik.Lines.Add('');
+    if (delta>0) then
+      begin
+          Wynik.Lines.Add('Funkcja ma dwa miejsca zerowe.')
+      end else
+    if (delta=0) then
+      begin
+          Wynik.Lines.Add('Funkcja ma jedno miejsce zerowe.')
+      end else
+    if (delta<0) then
+      begin
+          Wynik.Lines.Add('Funkcja nie mam miejsc zerowych.')
+      end;
+    { Koniec czesci slownej }
+
+  Wynik.Lines.Add('');
+  Wynik.Lines.Add('a = '+FloatToStr(a));
+  Wynik.Lines.Add('b = '+FloatToStr(b));
+  Wynik.Lines.Add('c = '+FloatToStr(c));
+  Wynik.Lines.Add('Delta = '+FloatToStr(delta));
+  Wynik.Lines.Add('Pierw. z delty = '+FloatToStr(sqrt(delta)));
+
+  Wynik.Lines.Add('');
+    if (delta=0) then
+      begin
+        Wynik.Lines.Add('x= '+FloatToStr(x));
+      end
+    else
+      begin
+          Wynik.Lines.Add('x1= '+FloatToStr(RoundTo(x1, -5)));
+          Wynik.Lines.Add('x2= '+FloatToStr(RoundTo(x2, -5)));
+      end;
+
+        Wynik.Lines.Add('');
+        Wynik.Lines.Add('W= ('+FloatToStr(RoundTo(p, -5))+' ; '+FloatToStr(RoundTo(q, -5))+')');
+      end;
+end;
+
+procedure TForm1.Oprogramie1Click(Sender: TObject);
+begin
+  Form2.Show;
+end;
+
+procedure TForm1.Zapiszplik1Click(Sender: TObject);
+begin
+  if SaveDialog1.Execute then
+    begin
+      AssignFile(MyFile, SaveDialog1.FileName);
+      Rewrite(MyFile);
+      Writeln(Myfile,Wynik.Lines.GetText);
+      CloseFile(MyFile);
+    end;
+end;
+
+procedure TForm1.Drukuj1Click(Sender: TObject);
+var
+  WynikOutput: TextFile;
+  I: LongInt;
+
+begin
+  if PrintDialog1.Execute then
+    begin
+       AssignPrn(WynikOutput);
+       Rewrite(WynikOutput);
+       Printer.Canvas.Font := Wynik.Font;
+
+       For I := 0 to Wynik.Lines.Count - 1 do
+          WriteLn(WynikOutput, Wynik.Lines[I]);
+          CloseFile(WynikOutput);
+    end;
+end;
+
+procedure TForm1.Instrukcja1Click(Sender: TObject);
+begin
+  ShowMessage('Instrukcja:'+ #13#10 + '' + #13#10 + 'Zapisz plik - Pozwala na zapis danych funkcji.'+ #13#10 + 'Oblicz - Pozwala na wyliczenie danych dla funkcji.' + #13#10 + '');
+end;
+
+procedure TForm1.FormPaint(Sender: TObject);
+var
+  i,j,k,u,y : Integer;
+
+begin
+  Canvas.Pen.Color := clGray;
+  Canvas.Pen.Width := 1;
+  j := 5;
+  k := 75;
+
+   for i := 1 to 59 do
+    begin
+      Canvas.MoveTo(216, k);
+      Canvas.LineTo(750, k);
+      k := k+j;
+    end;
+
+  y := 220;
+  u := 5;
+
+   for i := 1 to 107 do
+    begin
+      Canvas.MoveTo(y, 75);
+      Canvas.LineTo(y, 365);
+      y := y+u;
+    end;
+
+  // Koniec siatki
+
+    Canvas.Pen.Color := clBlack;
+    Canvas.Pen.Width := 1;
+
+    Canvas.MoveTo(216, 225);
+    Canvas.LineTo(750, 225);
+  // linia pozioma
+
+    Canvas.MoveTo(740, 215);
+    Canvas.LineTo(750, 225);
+
+    Canvas.MoveTo(740, 235);
+    Canvas.LineTo(750, 225);
+  // Strzalka
+
+    Canvas.MoveTo(480, 75);
+    Canvas.LineTo(480, 365);
+  // Linia pionowa
+
+    Canvas.MoveTo(470, 85);
+    Canvas.LineTo(480, 75);
+
+    Canvas.MoveTo(490, 85);
+    Canvas.LineTo(480, 75);
+  // Strzalka
+
+  // Koniec osi
+
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  a, b, c : real;
+  delta : real;
+  p1, q1, x111, x222, x333 : real;
+  p2, q2,x1 ,x2, x3, x11, x22, x33 : Integer;
+  p,q: Integer;
+  a1, b1, c1 :integer;
+  w:integer;
+  w1:integer;
+  i : integer;
+  z : integer;
+begin
+
+  if SpinEdit1.Value = 0 then
+      begin
+        ShowMessage('Najpierw oblicz funkcje!');
+      end
+    else
+
+  a := SpinEdit1.Value;
+  b := SpinEdit2.Value;
+  c := SpinEdit3.Value;
+  delta := (b * b) - (4 * a * c);
+  x333 :=    (-b)/(2*a);
+  x111 :=   ((-b) + sqrt(delta)) / (2 * a);
+  x222 :=   ((-b) - sqrt(delta)) / (2 * a);
+  p1 :=    (-b) /(2*a);
+  q1 :=    (-delta) / (4*a);
+  // koniec obliczen
+  //Result := Trunc(x) + Trunc (Frac(x) * 2);
+
+  p2 := Trunc(p1) + Trunc (Frac(p1) * 2);
+  q2 := Trunc(q1) + Trunc (Frac(q1) * 2);
+  x11 := Trunc(x111) + Trunc (Frac(x111) * 2);
+  x22 := Trunc(x222) + Trunc (Frac(x222) * 2);
+  x33 := Trunc(x333) + Trunc (Frac(x333) * 2);
+  a1 := Trunc(a) + Trunc (Frac(a) * 2);
+  b1 := Trunc(b) + Trunc (Frac(b) * 2);
+  c1 := Trunc(c) + Trunc (Frac(c) * 2);
+  // Konwenter Real -> Integer
+
+  Canvas.Pen.Color := clRed;
+  Canvas.Pen.Width := 4;
+
+  //Canvas.MoveTo(480, 225);
+  //Canvas.LineTo(480, 225);
+  // Srodek osi
+
+      P := 480+(p2*5);
+      q := 225-(q2*5);
+
+      Canvas.MoveTo(p, q);
+      Canvas.LineTo(p, q);
+
+  if (delta=0) then
+      begin
+        Canvas.Pen.Color := clYellow;
+        Canvas.Pen.Width := 4;
+
+        x3 := 480+(x33*5);
+
+        Canvas.MoveTo(x3, 225);
+        Canvas.LineTo(x3, 225);
+      end
+  else
+
+  Canvas.Pen.Color := clBlue;
+  Canvas.Pen.Width := 4;
+
+  x1 := 480+(x11*5);
+
+  Canvas.MoveTo(x1, 225);
+  Canvas.LineTo(x1, 225);
+
+  Canvas.Pen.Color := clYellow;
+  Canvas.Pen.Width := 4;
+
+  x2 := 480+(x22*5);
+
+  Canvas.MoveTo(x2, 225);
+  Canvas.LineTo(x2, 225);
+
+    //g := ((a)*x*x)+((b)*x)+(c)
+    if a < 0 then
+      begin
+        Canvas.Pen.Color := clPurple;
+        Canvas.Pen.Width := 2;
+        z:= -50;
+        Canvas.MoveTo(480, 600);
+          for i := 1 to 100 do
+            begin
+              w := 225-((((a1)*(z)*(z))+((b1)*(z))+(c1))*5);
+              w1 := 480+((z)*5);
+              Canvas.LineTo(w1, w);
+              Canvas.MoveTo(w1, w);
+              Canvas.LineTo(w1, w);
+              Canvas.MoveTo(w1, w);
+              z := z+(1);
+            end
+          end
+          else
+        begin
+          Canvas.Pen.Color := clPurple;
+          Canvas.Pen.Width := 2;
+          z:= -50;
+          Canvas.MoveTo(480, -10);
+          for i := 1 to 100 do
+            begin
+              w := 225-((((a1)*(z)*(z))+((b1)*(z))+(c1))*5);
+              w1 := 480+((z)*5);
+              Canvas.LineTo(w1, w);
+              Canvas.MoveTo(w1, w);
+              Canvas.LineTo(w1, w);
+              Canvas.MoveTo(w1, w);
+              z := z+(1);
+      end;
+    end;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+   Form1.canvas.Refresh;
+   Form1.Height := 10;
+
+   Form1.Height := 430;
+   Form1.canvas.Refresh;
+end;
+ // Program napisal Thomas Martin | mechatronik32@gmail.com | dnia: 13.10.13r. v1.1
+end.
